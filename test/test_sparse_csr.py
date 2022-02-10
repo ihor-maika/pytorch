@@ -1458,6 +1458,9 @@ class TestSparseCSR(TestCase):
     def test_autograd_dense_output(self, device, dtype, op):
         if op.name == "mv" and no_mkl_sparse:
             self.skipTest("MKL Sparse is not available")
+        if "mv" in op.name and TEST_WITH_ROCM:
+            # addmv and mv currently work only on CUDA
+            self.skipTest("ROCm is not supported")
 
         samples = list(op.sample_inputs(device, dtype, requires_grad=True))
 
